@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-func Encode(filename string) {
+func Encode(filename string, outputFilename *string) {
 	file, err := os.Open(filename)
 	if err != nil {
 		log.Fatalf("Error opening file %s", filename)
@@ -29,12 +29,87 @@ func Encode(filename string) {
 	}
 
 	codes := Huffman(dict)
-	Dump(codes, file)
+	Dump(codes, file, outputFilename)
 }
 
-func Dump(codes map[string]string, file *os.File) error {
-	outfile := file.Name() + ".bin"
-	f, err := os.OpenFile(outfile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+func Decode(filename, metadata string, outputFilename *string) {
+	file, err := os.Open(filename)
+	if err != nil {
+		log.Fatalf("Error opening file %s", filename)
+	}
+	defer file.Close()
+
+	paddingLength := make([]byte, 1)
+	_, err = file.Read(paddingLength)
+	if err != nil {
+		log.Fatalf("Error reading padding length: %v", err)
+	}
+
+	encodedData, err := os.ReadFile(filename)
+	if err != nil {
+		log.Fatalf("Error reading encoded data: %v", err)
+	}
+
+	metadataBytes, err := os.ReadFile(metadata)
+	if err != nil {
+		log.Fatalf("Error reading metadata: %v", err)
+	}
+
+	var codes map[string]string
+	err = json.Unmarshal(metadataBytes, &codes)
+	if err != nil {
+		log.Fatalf("Error unmarshalling metadata: %v", err)
+	}
+
+	reverseCodes := make(map[string]string)
+	for char, code := range codes {
+		reverseCodes[code] = char
+	}
+
+	var decodedData strings.Builder
+	var bitstreamBuffer strings.Builder
+	for _, b := range encodedData[1:] {
+		for i := 7; i >= 0; i-- {
+			bit := (b >> i) & 1
+			bitstreamBuffer.WriteString(fmt.Sprintf("%d", bit))
+		}
+	}
+
+	bitstream := bitstreamBuffer.String()[:len(bitstreamBuffer.String())-int(paddingLength[0])]
+
+	var codeBuffer strings.Builder
+	for _, bit := range bitstream {
+		codeBuffer.WriteString(string(bit))
+		if char, found := reverseCodes[codeBuffer.String()]; found {
+			decodedData.WriteString(char)
+			codeBuffer.Reset()
+		}
+	}
+
+	if outputFilename == nil || *outputFilename == "" {
+		defaultOutput := "output.txt"
+		outputFilename = &defaultOutput
+	}
+
+	outputFile, err := os.Create(*outputFilename)
+	if err != nil {
+		log.Fatalf("Error creating output file: %v", err)
+	}
+	defer outputFile.Close()
+
+	_, err = outputFile.WriteString(decodedData.String())
+	if err != nil {
+		log.Fatalf("Error writing output file: %v", err)
+	}
+}
+
+func Dump(codes map[string]string, 	file *os.File, outputFilename *string) error {
+	if outputFilename == nil || *outputFilename == "" {
+		outfile := file.Name() + ".bin"
+		outputFilename = &outfile
+	}
+
+	f, err := os.OpenFile(*outputFilename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -45,8 +120,9 @@ func Dump(codes map[string]string, file *os.File) error {
 	file.Seek(0, 0)
 	for scanner.Scan() {
 		line := scanner.Text()
+		line += "\n"
 		for _, c := range line {
-			encodedBits.WriteString(codes[strings.ToLower(string(c))])
+			encodedBits.WriteString(codes[string(c)])
 		}
 	}
 

@@ -14,10 +14,10 @@ func StartWorker(lines <-chan string) <-chan map[string]int {
 		defer close(finished)
 		for line := range lines {
 			tokens := strings.Split(line, "")
-
+			tokens = append(tokens, "\n")
 			dic := make(map[string]int)
 			for _, token := range tokens {
-				dic[strings.ToLower(token)]++
+				dic[token]++
 			}
 
 			finished <- dic
@@ -56,6 +56,7 @@ func ProcessFile(file *os.File) <-chan map[string]int {
 	wc3 := StartWorker(lines)
 	wc4 := StartWorker(lines)
 	scanner := bufio.NewScanner(file)
+	scanner.Split(bufio.ScanLines)
 	go func() {
 		defer close(lines)
 		for scanner.Scan() {

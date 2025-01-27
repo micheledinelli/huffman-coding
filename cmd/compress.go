@@ -7,6 +7,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var compressedFilename string
+
 var compressCmd = &cobra.Command{
 	Use:     "compress",
 	Aliases: []string{"encode", "c"},
@@ -16,7 +18,7 @@ var compressCmd = &cobra.Command{
 		fmt.Printf("Compressing %s with Huffman algorithm\n", args[0])
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		encoder.Encode(args[0])
+		encoder.Encode(args[0], &compressedFilename)
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("%s compressed\n", args[0])
@@ -24,5 +26,6 @@ var compressCmd = &cobra.Command{
 }
 
 func init() {
+	compressCmd.Flags().StringVarP(&compressedFilename, "out", "o", "", "Output filename")
 	rootCmd.AddCommand(compressCmd)
 }
