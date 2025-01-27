@@ -10,13 +10,10 @@
 Command line application to try Huffman code for lossless file compression.
 
 > [!IMPORTANT]
-> This is still a work in progress. The whole decompression has to be added and there is room for performance improvement.
-> 
-> The cli still supports `txt` files only.
-
+> The cli still supports `txt` files only
 
 Huffman code is a type of optimal prefix code.
-The process of finding or using such a code is Huffman coding, an algorithm developed by [David A. Huffman](https://en.wikipedia.org/wiki/David_A._Huffman). 
+The process of finding or using such a code is Huffman coding, an algorithm developed by [David A. Huffman](https://en.wikipedia.org/wiki/David_A._Huffman).
 Huffman algorithm is a greedy algorithm that uses a frequency-sorted binary tree and generates "prefix-free codes", in other words the bit string representing some particular symbol is never a prefix of the bit string representing any other symbol.
 
 ### How it works
@@ -41,10 +38,11 @@ Note that
 
 - ASCII encoding takes 8 bit for each char (8n bit)
 - Alphabet encoding takes 4 bit for each char (4n bit)
-  * 0000: z
-  * 0001: o
-  * and so on
-- Huffman?
+  - 0000: z
+  - 0001: o
+  - and so on
+
+What about Huffman? let's see
 
 <div align="center">
 
@@ -53,6 +51,7 @@ Note that
 </div>
 
 The example leads to the following dictionary:
+
 - i: 000
 - l: 001
 - z: 010
@@ -68,12 +67,16 @@ The number of bits required is
 
 ```math
 \begin{aligned}
- ((11.76\% *  3) + (5.88\% * 4) + (11.76\% * 3) + (5.88\% * 4) &+ \\ (17.65\% * 3) + (5.88\% * 4) + (5.88\% * 4) + (5.88\% * 3) &+ \\
+ ((11.76\% *  3) + (5.88\% * 4) + (11.76\% * 3) + (5.88\% * 4) &+ \\
+ (17.65\% * 3) + (5.88\% * 4) + (5.88\% * 4) + (5.88\% * 3) &+ \\
 (11.76\% * 3) + (17.65\% * 3))*n &= \\
    &= 3.2346n \\
-   3.2346n < 4n < 8n
 \end{aligned}
 ```
+
+Note that
+
+$$3.2346n < 4n < 8n$$
 
 ### How to try
 
@@ -86,6 +89,7 @@ go build -o huffman
 ```
 
 Once built list all the available commands with
+
 ```console
 ./huffman --help
 ```
