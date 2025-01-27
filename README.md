@@ -3,43 +3,39 @@
 <div align="center">
 
 ![go](https://img.shields.io/badge/Go-00ADD8.svg?style=plain&logo=Go&logoColor=white)
+![go](https://img.shields.io/github/go-mod/go-version/micheledinelli/huffman-encoder?style=flat)
 
 </div>
 
-Command line application to test Huffman code for lossless file compression.
+Command line application to try Huffman code for lossless file compression.
+
+> [!IMPORTANT]
+> This is still a work in progress. The whole decompression has to be added and there is room for performance improvement.
+> 
+> The cli still supports `txt` files only.
+
 
 Huffman code is a type of optimal prefix code.
 The process of finding or using such a code is Huffman coding, an algorithm developed by [David A. Huffman](https://en.wikipedia.org/wiki/David_A._Huffman). 
 Huffman algorithm is a greedy algorithm that uses a frequency-sorted binary tree and generates "prefix-free codes", in other words the bit string representing some particular symbol is never a prefix of the bit string representing any other symbol.
 
-An example of how it works with the message `A_DEAD_DAD_​CEDED_A_BAD_​BABE_A_BEADED_​ABACA_BED`
+<div align="center">
 
-![huffman](img/huffman.webp)
+![huffman](img/huffman-dark.webp)
 
-[credits](https://commons.wikimedia.org/wiki/User:Cmglee)
+</div>
 
-
-> [!IMPORTANT]
-> This is still a work in progress. The whole decompression has to be added and there is room for performance improvement.
-
-> [!WARNING]
-> The cli still supports `txt` files only.
-
-### Installation
+### How to try
 
 ```console
 git clone https://github.com/micheledinelli/huffman-encoder.git
 ```
 
-build it with
-
 ```console
 go build -o huffman
 ```
 
-### Usage
-
-To list all the available commands use
+Once built list all the available commands with
 ```console
 ./huffman --help
 ```

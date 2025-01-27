@@ -13,9 +13,6 @@ import (
 	"strings"
 )
 
-const outputFile = "huffman.bin"
-const metadataOutputFile = "huffman.metadata"
-
 func Encode(filename string) {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -36,7 +33,8 @@ func Encode(filename string) {
 }
 
 func Dump(codes map[string]string, file *os.File) error {
-	f, err := os.OpenFile(outputFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	outfile := file.Name() + ".bin"
+	f, err := os.OpenFile(outfile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -81,18 +79,12 @@ func Dump(codes map[string]string, file *os.File) error {
 		return fmt.Errorf("error writing encoded bits: %v", err)
 	}
 
-	metaFile, err := os.Create(metadataOutputFile)
+	metaOutfile := file.Name() + ".metadata"
+	metaFile, err := os.Create(metaOutfile)
 	if err != nil {
 		return fmt.Errorf("error creating metadata file: %v", err)
 	}
 	defer metaFile.Close()
-
-	// for k, v := range codes {
-	// 	_, err = metaFile.WriteString(fmt.Sprintf("%s:%s\n", k, v))
-	// 	if err != nil {
-	// 		return fmt.Errorf("error writing metadata: %v", err)
-	// 	}
-	// }
 
 	metadataBytes, err := json.Marshal(codes)
 	if err != nil {
