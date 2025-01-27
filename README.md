@@ -3,7 +3,7 @@
 <div align="center">
 
 ![go](https://img.shields.io/badge/Go-00ADD8.svg?style=plain&logo=Go&logoColor=white)
-![go](https://img.shields.io/github/go-mod/go-version/micheledinelli/huffman-coding.git?style=flat)
+![go](https://img.shields.io/github/go-mod/go-version/micheledinelli/huffman-coding?style=flat)
 
 </div>
 
@@ -94,10 +94,8 @@ Along with the source code there is also a file named `divine-comedy-it.txt` whi
 
 ```console
 ./huffman c divine-comedy-it.txt
-
-// c, compress and encode are aliases
 ```
 
-`divine-comedy-it.txt` is compressed in `huffman.bin` which is 280KB almost half of the size of the original one (543KB).
+`divine-comedy-it.txt` is compressed in `divine-comedy-it.txt.bin` which is 280KB almost half of the size of the original one (543KB).
 ![results](img/results.webp)
-The cli also outputs metadata (`huffman.metadata`), the unique encoding for a specific file in order to be able to decompress it later.
+The cli also outputs metadata (`divine-comedy-it.txt.metadata`), the unique encoding for a specific file in order to be able to decompress it later.
